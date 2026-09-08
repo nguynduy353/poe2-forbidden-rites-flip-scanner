@@ -6,15 +6,40 @@
 <title>PoE 2 Forbidden Rites Economy Flip Scanner</title>
 <style>
 :root{--bg:#0a1117;--panel:#141d24;--panel2:#0d171e;--line:#30404b;--text:#edf2f5;--muted:#9eacb8;--gold:#e4c777;--green:#51dda0;--red:#ff7777;--orange:#f4b860;--blue:#65cce8}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#080f14,#101920);color:var(--text);font:14px/1.45 Segoe UI,Arial,sans-serif}.wrap{max-width:1800px;margin:18px auto;padding:0 14px}h1{margin:0;color:var(--gold);font-size:28px}.sub{color:var(--muted);margin:4px 0 15px}.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:12px;box-shadow:0 8px 28px #0005}.grid{display:grid;grid-template-columns:repeat(8,minmax(120px,1fr));gap:8px}label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}input,select,button{width:100%;background:#0b141a;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px}button{cursor:pointer;background:#76591f;border-color:#aa8136;font-weight:800}button.sec{background:#263641;border-color:#435764}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{width:auto;min-width:140px}.status{margin-top:9px;padding:9px;background:var(--panel2);border-radius:8px;color:var(--muted)}.ok{color:var(--green)}.bad{color:var(--red)}.orange{color:var(--orange)}.checks{display:flex;gap:9px;flex-wrap:wrap;margin-top:9px}.checks label{display:flex;align-items:center;gap:5px;color:var(--text);margin:0}.checks input{width:auto}.tablewrap{overflow:auto;max-height:720px}table{width:100%;border-collapse:collapse;min-width:1500px}th,td{padding:8px 7px;border-bottom:1px solid #293740;white-space:nowrap;text-align:right}th{position:sticky;top:0;background:var(--panel);color:#dfc67e;font-size:12px;z-index:2}th:first-child,td:first-child{text-align:left}.name{display:flex;align-items:center;gap:7px}.name img{width:28px;height:28px;object-fit:contain}.small{font-size:12px;color:var(--muted)}.up{color:var(--green)}.down{color:var(--red)}.mid{color:var(--orange)}.profit{font-weight:800;color:var(--green)}.loss{font-weight:700;color:var(--red)}.badge{display:inline-block;padding:3px 7px;border-radius:999px;font-size:11px;font-weight:800}.potential{background:#283a45;color:#c5e1ed}.priority{background:#143e2f;color:#69e4ac}.consider{background:#40351c;color:#f3d071}.skip{background:#472529;color:#ff8d8d}.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.kpi{background:var(--panel2);border:1px solid #293842;border-radius:8px;padding:9px}.kpi b{display:block;font-size:19px;color:#f1d78c}.fav{cursor:pointer;font-size:18px;color:#66737d}.fav.on{color:#f1ca5a}.toolbar{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.toolbar>div{min-width:180px;flex:1}.toolbar .wide{flex:2}.hint{color:#b5c6d0;font-size:12px;margin-top:7px}.modalBack{display:none;position:fixed;inset:0;background:#000b;z-index:999}.modalBack.show{display:block}.modal{display:none;position:fixed;z-index:1000;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,95vw);max-height:92vh;overflow:auto;background:#111b22;border:1px solid #40515d;border-radius:12px;box-shadow:0 20px 60px #000b;padding:15px}.modal.show{display:block}.modalHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.modalHead button{width:auto}.ratioGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.resultGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.result{background:#0c151b;border:1px solid var(--line);border-radius:8px;padding:9px}.result b{display:block;font-size:18px;color:#f1d78c}.result.net b{color:var(--green)}.result.loss b{color:var(--red)}.modalActions{display:flex;gap:8px;margin-top:10px}.modalActions button{flex:1}.search{margin-top:10px}.footer{color:#71808b;font-size:11px;margin:10px 0 25px}.iconBtn{width:auto;padding:6px 9px}.analyze{width:auto;background:#263641;border-color:#435764;padding:7px 10px}.starBtn{border:0;background:transparent;color:#66737d;padding:0;width:auto;font-size:18px}.starBtn.on{color:#f1ca5a}.mutedCell{color:#7f8c95}.marketVal{font-weight:700;color:#d8e5eb}.score{color:#b8d8e6}.trend{font-weight:700}.rowHighlight{background:#17242c}.danger{color:#ff8d8d}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#080f14,#101920);color:var(--text);font:14px/1.45 Segoe UI,Arial,sans-serif}.wrap{max-width:1800px;margin:18px auto;padding:0 14px}h1{margin:0;color:var(--gold);font-size:28px}.sub{color:var(--muted);margin:4px 0 15px}.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:12px;box-shadow:0 8px 28px #0005}.grid{display:grid;grid-template-columns:repeat(8,minmax(120px,1fr));gap:8px}label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}input,select,button{width:100%;background:#0b141a;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px}button{cursor:pointer;background:#76591f;border-color:#aa8136;font-weight:800}button.sec{background:#263641;border-color:#435764}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{width:auto;min-width:140px}.status{margin-top:9px;padding:9px;background:var(--panel2);border-radius:8px;color:var(--muted)}.ok{color:var(--green)}.bad{color:var(--red)}.orange{color:var(--orange)}.checks{display:flex;gap:9px;flex-wrap:wrap;margin-top:9px}.checks label{display:flex;align-items:center;gap:5px;color:var(--text);margin:0}.checks input{width:auto}.tablewrap{overflow:auto;max-height:720px}table{width:100%;border-collapse:collapse;min-width:1500px}th,td{padding:8px 7px;border-bottom:1px solid #293740;white-space:nowrap;text-align:right}th{position:sticky;top:0;background:var(--panel);color:#dfc67e;font-size:12px;z-index:2}th:first-child,td:first-child{text-align:left}.name{display:flex;align-items:center;gap:7px}.name img{width:28px;height:28px;object-fit:contain}.small{font-size:12px;color:var(--muted)}.up{color:var(--green)}.down{color:var(--red)}.mid{color:var(--orange)}.profit{font-weight:800;color:var(--green)}.loss{font-weight:700;color:var(--red)}.badge{display:inline-block;padding:3px 7px;border-radius:999px;font-size:11px;font-weight:800}.potential{background:#283a45;color:#c5e1ed}.priority{background:#143e2f;color:#69e4ac}.consider{background:#40351c;color:#f3d071}.skip{background:#472529;color:#ff8d8d}.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.kpi{background:var(--panel2);border:1px solid #293842;border-radius:8px;padding:9px}.kpi b{display:block;font-size:19px;color:#f1d78c}.fav{cursor:pointer;font-size:18px;color:#66737d}.fav.on{color:#f1ca5a}.toolbar{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.toolbar>div{min-width:180px;flex:1}.toolbar .wide{flex:2}.hint{color:#b5c6d0;font-size:12px;margin-top:7px}.modalBack{display:none;position:fixed;inset:0;background:#000b;z-index:999}.modalBack.show{display:block}.modal{display:none;position:fixed;z-index:1000;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,95vw);max-height:92vh;overflow:auto;background:#111b22;border:1px solid #40515d;border-radius:12px;box-shadow:0 20px 60px #000b;padding:15px}.modal.show{display:block}.modalHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.modalHead button{width:auto}.ratioGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.resultGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.result{background:#0c151b;border:1px solid var(--line);border-radius:8px;padding:9px}.result b{display:block;font-size:18px;color:#f1d78c}.result.net b{color:var(--green)}.result.loss b{color:var(--red)}.modalActions{display:flex;gap:8px;margin-top:10px}.modalActions button{flex:1}.search{margin-top:10px}.analyzeItem{margin-top:2px}.analyzeSection{margin-top:10px}.analyzeSectionTitle{font-weight:800;color:var(--muted);font-size:12px;text-transform:uppercase}.analyze3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:6px}.analyze4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:7px}.analyzeHintBox{margin-top:7px;padding:8px;border:1px solid var(--line);border-radius:8px;background:#0d151b}.analyzeResultTitle{margin-top:10px;padding-top:9px;border-top:1px solid var(--line)}@media(max-width:700px){.analyze3,.analyze4{grid-template-columns:1fr}}
+.ratioCorner{position:fixed;top:18px;right:18px;width:340px;max-height:calc(100vh - 36px);overflow:auto;background:#141d24ee;border:1px solid #3a4a55;border-radius:12px;padding:12px;box-shadow:0 16px 45px #000b;backdrop-filter:blur(8px);z-index:500}.ratioCornerHead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.ratioCornerHead b{color:#edf2f5;font-size:15px}.ratioCornerHead span{color:#9eacb8;font-size:12px}.ratioForm{display:grid;grid-template-columns:1fr 1fr;gap:7px}.ratioForm label{margin-bottom:4px}.ratioForm input,.ratioForm select{padding:8px}.ratioBtns{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.ratioBtns button{min-width:0}.ratioResult{border-top:1px solid #30404b;margin-top:10px;padding-top:9px}.ratioBest{font-size:25px;font-weight:900;color:var(--green);letter-spacing:.5px}.ratioMeta{font-size:11px;color:#aebdc6;margin:2px 0 8px}.ratioTableWrap{overflow:auto;max-height:250px;border:1px solid #30404b;border-radius:8px}.ratioTable{width:100%;min-width:0;border-collapse:collapse;font-size:11px}.ratioTable th,.ratioTable td{padding:6px 5px;border-bottom:1px solid #293740;white-space:nowrap;text-align:right}.ratioTable th:first-child,.ratioTable td:first-child{text-align:left}.ratioTable th{position:sticky;top:0;background:#141d24;color:#dfc67e;z-index:2}.ratioRowBest{background:#0d3025}.ratioEmpty{color:#7f8c95;text-align:center!important;padding:14px!important}.ratioCorner .small{font-size:11px}.ratioHint{color:#71808b;font-size:10px;margin-top:6px}@media(max-width:1500px){.ratioCorner{position:relative;top:auto;right:auto;width:auto;max-width:none;margin:0 0 12px}.wrap{max-width:1800px}}@media(max-width:700px){.ratioForm,.ratioBtns{grid-template-columns:1fr 1fr}.ratioCorner{margin-bottom:10px}}
+.footer{color:#71808b;font-size:11px;margin:10px 0 25px}.iconBtn{width:auto;padding:6px 9px}.analyze{width:auto;background:#263641;border-color:#435764;padding:7px 10px}.starBtn{border:0;background:transparent;color:#66737d;padding:0;width:auto;font-size:18px}.starBtn.on{color:#f1ca5a}.mutedCell{color:#7f8c95}.marketVal{font-weight:700;color:#d8e5eb}.score{color:#b8d8e6}.trend{font-weight:700}.rowHighlight{background:#17242c}.danger{color:#ff8d8d}
 @media(max-width:1200px){.grid{grid-template-columns:repeat(4,1fr)}.kpis{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.grid,.kpis,.ratioGrid,.resultGrid{grid-template-columns:1fr 1fr}.wrap{padding:0 8px}.modal{padding:12px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<h1>PoE 2 Forbidden Rites Economy Flip Scanner <span class="small">v2.1.5 · Patch 0.5.5</span></h1>
+<h1>PoE 2 Forbidden Rites Economy Flip Scanner <span class="small">v2.1.6 · Patch 0.5.5</span></h1>
 <div class="sub">Luồng giống scanner PoE1: <b>SCAN → Cloudflare Worker → poe.ninja → lọc ứng viên flip → ANALYZE → nhập Buy/Sell Order → tự tính Profit.</b> Chỉ scan economy, không scan Unique/Equipment.</div>
+
+<aside class="ratioCorner" aria-label="PoE Ratio Calculator">
+  <div class="ratioCornerHead"><div><b>PoE Ratio Calculator</b> <span>So sánh nhiều ratio</span></div><button class="sec iconBtn" id="ratioReset" title="Đặt lại">↺</button></div>
+  <div class="ratioForm">
+    <div><label>Ratio target</label><input id="ratioTarget" type="number" min="0.0001" step="0.01" value="2.4"></div>
+    <div><label>Max item / batch</label><input id="ratioMaxBatch" type="number" min="1" step="1" value="100"></div>
+    <div><label>Số cặp hiển thị</label><input id="ratioPairCount" type="number" min="1" max="30" step="1" value="8"></div>
+    <div><label>Sell Gold / 1 Divine</label><input id="ratioSellGold" type="number" min="0" step="0.01" value="0"></div>
+    <div><label>Ưu tiên batch nhỏ</label><select id="ratioPreferSmall"><option value="yes">Có</option><option value="no">Không</option></select></div>
+    <div><label>Khoảng lệch tối đa</label><input id="ratioTolerance" type="number" min="0" step="0.01" value="0.02"></div>
+  </div>
+  <div class="ratioBtns"><button id="ratioCompare">SO SÁNH CÁC CẶP</button><button class="sec" id="ratioCalcItem">TÍNH THEO ITEM</button></div>
+  <div class="ratioForm" style="margin-top:8px">
+    <div><label>Số lượng Item</label><input id="ratioItemQty" type="number" min="1" step="1" value="6"></div>
+    <div><label>Cặp Ratio</label><input id="ratioPairInput" type="text" value="25 : 6" placeholder="25 : 6"></div>
+  </div>
+  <div class="ratioResult">
+    <div id="ratioBest" class="ratioBest">—</div>
+    <div id="ratioMeta" class="ratioMeta">Nhập ratio để bắt đầu.</div>
+    <div class="ratioTableWrap"><table class="ratioTable"><thead><tr><th>#</th><th>Item:Div</th><th>Item/D</th><th>D/item</th><th>Gold</th></tr></thead><tbody id="ratioRows"><tr><td colspan="5" class="ratioEmpty">Chưa có dữ liệu</td></tr></tbody></table></div>
+    <div class="ratioHint">Công cụ này độc lập với market scanner; dùng để so sánh các cặp ratio theo mục tiêu Item/Divine.</div>
+  </div>
+</aside>
 
 <div class="card">
 <div class="grid">
@@ -70,31 +95,13 @@
 
 <div id="modalBack" class="modalBack" onclick="closeAnalyze(event)"></div>
 <div id="modal" class="modal">
-<div class="modalHead"><div><b>Analyze Flip</b><div id="modalItem" class="small"></div></div><button class="sec" onclick="closeAnalyze()">ĐÓNG</button></div>
-<div class="ratioGrid">
-<div><label>Buy — Exalted / item</label><input id="buyC" type="number" min="0" step="0.01"></div>
-<div><label>Buy — số lượng</label><input id="qty" type="number" min="1" step="1" value="1"></div>
-<div><label>Buy — tổng Exalted</label><input id="buyTotal" readonly></div>
-<div><label>Sell — Divine / item</label><input id="sellD" type="number" min="0" step="0.0001"></div>
-<div><label>Sell — số lượng</label><input id="sellQty" type="number" min="1" step="1" value="1"></div>
-<div><label>Sell — tổng Divine</label><input id="sellTotal" readonly></div>
-<div><label>Extra fee — Divine</label><input id="feeD" type="number" min="0" step="0.0001" value="0"></div>
-<div><label>1 Divine = Exalted</label><input id="modalDivRate" readonly></div>
-<div><label>Buy/Sell spread</label><input id="spread" readonly></div>
-</div>
-<div class="resultGrid">
-<div class="result"><span class="small">Capital</span><b id="rCapital">—</b></div>
-<div class="result"><span class="small">Gross Profit</span><b id="rGross">—</b></div>
-<div class="result"><span class="small">Fees</span><b id="rFee">—</b></div>
-<div class="result net" id="netBox"><span class="small">Net Profit</span><b id="rNet">—</b></div>
-<div class="result"><span class="small">ROI / Margin</span><b id="rRoi">—</b></div>
-<div class="result"><span class="small">Net / round</span><b id="rRound">—</b></div>
-<div class="result"><span class="small">Buy effective Ex</span><b id="rBuyEff">—</b></div>
-<div class="result"><span class="small">Sell effective Ex</span><b id="rSellEff">—</b></div>
-</div>
-<div id="calcHint" class="hint"></div>
-<div class="modalActions"><button onclick="saveAnalyze()">LƯU BUY/SELL</button><button class="sec" onclick="clearAnalyze()">XÓA GIÁ</button></div>
-</div>
+<div class="modalHead"><div><b>Analyze Flip</b><div id="modalItem" class="small analyzeItem"></div></div><button class="sec" onclick="closeAnalyze()">ĐÓNG</button></div>
+<div class="analyzeSection"><div class="analyzeSectionTitle">BUY — mua item bằng Exalted</div><div class="analyze3"><div><label>Exalted / item</label><input id="buyC" type="number" min="0" step="0.001"></div><div><label>Số lượng item</label><input id="qty" type="number" min="1" step="1" value="1"></div><div><label>Tổng Exalted</label><input id="buyTotal" readonly></div></div></div>
+<div class="analyzeSection"><div class="analyzeSectionTitle">SELL — bán item lấy Divine</div><div class="analyze3"><div><label>Divine / item</label><input id="sellD" type="number" min="0" step="0.0001"></div><div><label>Số lượng item</label><input id="sellQty" type="number" min="1" step="1" value="1"></div><div><label>D / item</label><input id="sellPerItem" readonly></div></div></div>
+<div class="analyze4"><div><label>Phí thêm / Divine</label><input id="feeD" type="number" min="0" step="0.0001" value="0"></div><div><label>1 Divine = Exalted</label><input id="modalDivRate" readonly></div><div><label>Sell tổng Divine</label><input id="sellTotal" readonly></div><div><label>Spread</label><input id="spread" readonly></div></div>
+<div class="analyzeHintBox"><div class="small"><b>Thông tin thị trường</b></div><div id="analyzeMarketHint" class="small" style="margin-top:4px"></div></div>
+<div class="analyzeResultTitle"><div class="analyzeSectionTitle">KẾT QUẢ FLIP</div></div><div class="resultGrid"><div class="result"><span class="small">Capital</span><b id="rCapital">—</b></div><div class="result"><span class="small">Gross Profit</span><b id="rGross">—</b></div><div class="result"><span class="small">Fees</span><b id="rFee">—</b></div><div class="result net" id="netBox"><span class="small">Net Profit</span><b id="rNet">—</b></div><div class="result"><span class="small">ROI / Margin</span><b id="rRoi">—</b></div><div class="result"><span class="small">Net / round</span><b id="rRound">—</b></div><div class="result"><span class="small">Buy effective Ex</span><b id="rBuyEff">—</b></div><div class="result"><span class="small">Sell effective Ex</span><b id="rSellEff">—</b></div></div>
+<div id="calcHint" class="hint"></div><div class="modalActions"><button onclick="saveAnalyze()">LƯU BUY/SELL</button><button class="sec" onclick="clearAnalyze()">XÓA GIÁ</button></div></div>>
 
 <script src="config.js"></script>
 <script>
@@ -210,16 +217,62 @@ function render(){
 <td>${c?fmt(c.buy,3)+" Ex":"—"}</td><td>${c?fmt(c.sellD,5)+"D":"—"}</td><td>${c?fmt(c.qty,0):"—"}</td><td>${c?fmt(c.buyTotal,2)+" Ex":"—"}</td><td class="${c?(c.netEx>0?"profit":"loss"):"mutedCell"}">${c?fmt(c.netEx,4)+" Ex":"—"}</td><td class="${c?(c.roi>0?"profit":"loss"):"mutedCell"}">${c?fmt(c.roi,2)+"%":"—"}</td><td><span class="badge ${dc}">${d}</span></td><td><button class="analyze">Analyze</button></td>`;
  tr.querySelector(".starBtn").onclick=()=>{fav.has(k)?fav.delete(k):fav.add(k);localStorage.setItem("poe2frFavV2",JSON.stringify([...fav]));render()};tr.querySelector(".analyze").onclick=()=>openAnalyze(x);rows.appendChild(tr)})
 }
-function openAnalyze(x){state.current=x;const e=entered[key(x)]||{};$("modalItem").textContent=`${x.name} · ${categoryLabel(x.cat)} · Market ${fmt(x.market,4)} Ex · Volume ${fmt(x.volume,2)} Ex`;$("buyC").value=e.buyC??"";$("qty").value=e.qty??1;$("sellD").value=e.sellD??"";$("sellQty").value=e.sellQty??(e.qty||1);$("feeD").value=e.feeD??0;$("modalDivRate").value=state.divineExalted?`1 Divine = ${fmt(state.divineExalted,2)} Exalted`:"—";$("modalBack").classList.add("show");$("modal").classList.add("show");updateCalc()}
-function closeAnalyze(ev){if(ev&&ev.target!==$("modalBack"))return;$("modalBack").classList.remove("show");$("modal").classList.remove("show");state.current=null}
+function openAnalyze(x){state.current=x;const e=entered[key(x)]||{};$('modalItem').textContent=`${x.name} · ${categoryLabel(x.cat)} · Market ${fmt(x.market,4)} Ex · Volume ${fmt(x.volume,2)} Ex`;$('buyC').value=e.buyC??'';$('qty').value=e.qty??1;$('sellD').value=e.sellD??'';$('sellQty').value=e.sellQty??(e.qty||1);$('feeD').value=e.feeD??0;$('modalDivRate').value=state.divineExalted?`1 Divine = ${fmt(state.divineExalted,2)} Exalted`:'—';$('analyzeMarketHint').innerHTML=`Market tham chiếu: <b>${fmt(x.market,4)} Ex/item</b> · Volume: <b>${fmt(x.volume,2)} Ex</b> · 7d: <b>${fmt(x.change,2)}%</b>`;$('modalBack').classList.add('show');$('modal').classList.add('show');updateCalc()}function closeAnalyze(ev){if(ev&&ev.target!==$("modalBack"))return;$("modalBack").classList.remove("show");$("modal").classList.remove("show");state.current=null}
 function updateCalc(){
- const x=state.current;if(!x)return;const temp={buyC:$("buyC").value,qty:$("qty").value,sellD:$("sellD").value,sellQty:$("sellQty").value,feeD:$("feeD").value};const c=calc(x,temp);$("buyTotal").value=c.buyTotal?fmt(c.buyTotal,2)+" Ex":"";$("sellTotal").value=c.sellTotalD?fmt(c.sellTotalD,5)+" D":"";$("spread").value=(c.buy&&c.sellD&&state.divineExalted)?fmt(c.spread,2)+"%":"—";$("rCapital").textContent=c.capitalEx?fmt(c.capitalEx,4)+" Ex":"—";$("rGross").textContent=c.gross?fmt(c.gross,4)+" Ex":"—";$("rFee").textContent=fmt(c.feeEx,4)+" Ex";$("rNet").textContent=(c.buy||c.sellD)?fmt(c.netEx,4)+" Ex":"—";$("rRoi").textContent=(c.buy||c.sellD)?fmt(c.roi,2)+"%":"—";$("rRound").textContent=c.rounds?fmt(c.netRound,4)+" Ex":"—";$("rBuyEff").textContent=c.buy?fmt(c.buy,3)+" Ex":"—";$("rSellEff").textContent=c.sellD&&state.divineExalted?fmt(c.sellD*state.divineExalted,2)+" Ex":"—";$("netBox").className="result "+(c.netEx>0?"net":c.netEx<0?"loss":"");$("calcHint").innerHTML=state.divineExalted?`Công thức: <b>Net Ex = (Sell Divine × ${fmt(state.divineExalted,2)}) − Buy Ex − (Fee Divine × ${fmt(state.divineExalted,2)})</b>. ${c.netEx>0?`<span class="ok">Flip đang có lợi nhuận theo order bạn nhập.</span>`:`<span class="danger">Order hiện tại chưa có lợi nhuận.</span>`}`:"Chưa có Divine → Exalted rate."
+ const x=state.current;if(!x)return;const temp={buyC:$("buyC").value,qty:$("qty").value,sellD:$("sellD").value,sellQty:$("sellQty").value,feeD:$("feeD").value};const c=calc(x,temp);$("buyTotal").value=c.buyTotal?fmt(c.buyTotal,2)+" Ex":"";$("sellTotal").value=c.sellTotalD?fmt(c.sellTotalD,5)+" D":"";$("sellPerItem").value=c.sellD?fmt(c.sellD,5)+" D/item":"";$("analyzeMarketHint").innerHTML=`Market tham chiếu: <b>${fmt(x.market,4)} Ex/item</b> · Volume: <b>${fmt(x.volume,2)} Ex</b> · 7d: <b>${fmt(x.change,2)}%</b>`;$("spread").value=(c.buy&&c.sellD&&state.divineExalted)?fmt(c.spread,2)+"%":"—";$("rCapital").textContent=c.capitalEx?fmt(c.capitalEx,4)+" Ex":"—";$("rGross").textContent=c.gross?fmt(c.gross,4)+" Ex":"—";$("rFee").textContent=fmt(c.feeEx,4)+" Ex";$("rNet").textContent=(c.buy||c.sellD)?fmt(c.netEx,4)+" Ex":"—";$("rRoi").textContent=(c.buy||c.sellD)?fmt(c.roi,2)+"%":"—";$("rRound").textContent=c.rounds?fmt(c.netRound,4)+" Ex":"—";$("rBuyEff").textContent=c.buy?fmt(c.buy,3)+" Ex":"—";$("rSellEff").textContent=c.sellD&&state.divineExalted?fmt(c.sellD*state.divineExalted,2)+" Ex":"—";$("netBox").className="result "+(c.netEx>0?"net":c.netEx<0?"loss":"");$("calcHint").innerHTML=state.divineExalted?`Công thức: <b>Net Ex = (Sell Divine × ${fmt(state.divineExalted,2)}) − Buy Ex − (Fee Divine × ${fmt(state.divineExalted,2)})</b>. ${c.netEx>0?`<span class="ok">Flip đang có lợi nhuận theo order bạn nhập.</span>`:`<span class="danger">Order hiện tại chưa có lợi nhuận.</span>`}`:"Chưa có Divine → Exalted rate."
 }
 function saveAnalyze(){if(!state.current)return;const k=key(state.current);entered[k]={buyC:num($("buyC").value),qty:Math.floor(num($("qty").value)),sellD:num($("sellD").value),sellQty:Math.floor(num($("sellQty").value)),feeD:num($("feeD").value),savedAt:Date.now()};localStorage.setItem("poe2frEnteredV3",JSON.stringify(entered));closeAnalyze();render();setStatus(`<span class="ok">✓ Đã lưu Buy/Sell cho ${esc(state.current.name)}.</span>`)}
 function clearAnalyze(){if(!state.current)return;delete entered[key(state.current)];localStorage.setItem("poe2frEnteredV3",JSON.stringify(entered));$("buyC").value="";$("sellD").value="";updateCalc();render()}
 
 function exportCsv(){const a=getFiltered();if(!a.length){setStatus("Không có dữ liệu để export.");return}const head=["Item","Category","Volume_Exalted","Market_Exalted","Trend_7d","Score","Buy_Exalted_Item","Buy_Qty","Buy_Total_Exalted","Sell_Divine_Item","Sell_Qty","Sell_Total_Divine","Fee_Divine","Net_Exalted","Net_Divine","ROI_Percent","Decision"];const rows=a.map(x=>{const c=entered[key(x)]?calc(x,entered[key(x)]):null;return[x.name,categoryLabel(x.cat),x.volume,x.market,x.change,x.score,c?.buy??"",c?.qty??"",c?.buyTotal??"",c?.sellD??"",c?.sellQty??"",c?.sellTotalD??"",c?.feeD??"",c?.netEx??"",c?.netD??"",c?.roi??"",decision(x)[0]]});const csv=[head,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),aEl=document.createElement("a");aEl.href=url;aEl.download=`poe2-forbidden-rites-flips-${Date.now()}.csv`;aEl.click();URL.revokeObjectURL(url)}
 ["buyC","qty","sellD","sellQty","feeD"].forEach(id=>$(id).addEventListener("input",updateCalc));$("divineExalted").value=state.divineExalted;$("divineExalted").addEventListener("input",()=>{state.divineExalted=num($("divineExalted").value);localStorage.setItem("poe2frDivineExaltedV3",String(state.divineExalted));$("modalDivRate").value=state.divineExalted?`1 Divine = ${fmt(state.divineExalted,2)} Exalted`:"—";if(state.items.length)render();if(state.current)updateCalc()});["onlyFav","onlyEntered","onlyPositive","search","minValue","maxValue","minVol","maxChange"].forEach(id=>$(id).addEventListener("input",()=>state.items.length&&render()));
+function parseRatioPair(text){
+  const m=String(text||'').match(/\s*(\d+(?:\.\d+)?)\s*[:\/]\s*(\d+(?:\.\d+)?)\s*/);
+  if(!m)return null;
+  const item=num(m[1]),div=num(m[2]);
+  return item>0&&div>0?{item,div,ratio:item/div,dPerItem:div/item}:null;
+}
+function ratioPairs(target,maxBatch,count){
+  const out=[];
+  const maxItem=Math.max(1,Math.floor(maxBatch));
+  const maxPairs=Math.max(1,Math.min(30,Math.floor(count)));
+  for(let div=1;div<=maxPairs*10;div++){
+    const item=Math.round(target*div);
+    if(item<1||item>maxItem)continue;
+    const ratio=item/div;
+    out.push({item,div,ratio,dPerItem:div/item});
+  }
+  // Remove duplicate ratios, then prefer pairs closest to target and smaller batches.
+  const seen=new Set();
+  return out.filter(x=>{const k=`${x.item}:${x.div}`;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>Math.abs(a.ratio-target)-Math.abs(b.ratio-target)||a.item-b.item).slice(0,maxPairs);
+}
+function renderRatio(){
+  const target=num($('ratioTarget').value)||2.4,maxBatch=num($('ratioMaxBatch').value)||100,count=num($('ratioPairCount').value)||8,tol=num($('ratioTolerance').value),prefer=$('ratioPreferSmall').value==='yes';
+  const typed=parseRatioPair($('ratioPairInput').value);
+  const pairs=ratioPairs(target,maxBatch,count);
+  if(typed) pairs.unshift(typed);
+  const unique=[];const seen=new Set();for(const p of pairs){const k=`${p.item}:${p.div}`;if(!seen.has(k)){seen.add(k);unique.push(p)}}
+  const sorted=unique.slice(0,count).sort((a,b)=>{const da=Math.abs(a.ratio-target),db=Math.abs(b.ratio-target);return da-db||(prefer?a.item-b.item:b.item-a.item)});
+  const best=sorted[0];
+  $('ratioBest').textContent=best?`${best.item} : ${best.div}`:'—';
+  $('ratioMeta').innerHTML=best?`Best overall · ${fmt(best.ratio,6)} item/D · ${fmt(best.dPerItem,6)} D/item · lệch ${fmt(best.ratio-target,6)}`:'Không tạo được cặp phù hợp.';
+  const gold=num($('ratioSellGold').value);
+  $('ratioRows').innerHTML=sorted.map((p,i)=>{const isBest=best&&p.item===best.item&&p.div===best.div;const goldText=gold>0?fmt(gold*p.div,2):'—';return `<tr class="${isBest?'ratioRowBest':''}"><td>${i+1}</td><td><b>${p.item}:${p.div}</b></td><td>${fmt(p.ratio,6)}</td><td>${fmt(p.dPerItem,6)}</td><td>${goldText}</td></tr>`}).join('')||'<tr><td colspan="5" class="ratioEmpty">Chưa có cặp phù hợp</td></tr>';
+}
+function ratioCalcByItem(){
+  const qty=Math.max(1,Math.floor(num($('ratioItemQty').value)||1));
+  const p=parseRatioPair($('ratioPairInput').value);
+  if(!p){$('ratioBest').textContent='—';$('ratioMeta').textContent='Cặp ratio không hợp lệ. Ví dụ: 25 : 6';return}
+  const div=qty*p.dPerItem;
+  $('ratioBest').textContent=`${qty} : ${fmt(div,4)}`;
+  $('ratioMeta').innerHTML=`${qty} Item = <b>${fmt(div,4)} Divine</b> · ${fmt(p.ratio,6)} item/D · ${fmt(p.dPerItem,6)} D/item`;
+}
+function resetRatio(){
+  $('ratioTarget').value=2.4;$('ratioMaxBatch').value=100;$('ratioPairCount').value=8;$('ratioSellGold').value=0;$('ratioPreferSmall').value='yes';$('ratioTolerance').value=0.02;$('ratioItemQty').value=6;$('ratioPairInput').value='25 : 6';renderRatio();
+}
+['ratioTarget','ratioMaxBatch','ratioPairCount','ratioSellGold','ratioPreferSmall','ratioTolerance'].forEach(id=>$(id).addEventListener('input',renderRatio));
+$('ratioCompare').addEventListener('click',renderRatio);$('ratioCalcItem').addEventListener('click',ratioCalcByItem);$('ratioReset').addEventListener('click',resetRatio);
+renderRatio();
 loadCategories();
 const savedWorker=localStorage.getItem("poe2frWorkerV2")||"";
 $("workerUrl").value=savedWorker||APP_CONFIG.workerUrl||"";
