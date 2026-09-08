@@ -1,51 +1,55 @@
-# PoE 2 Forbidden Rites Economy Flip Scanner v2.0.0
+# PoE 2 Forbidden Rites Economy Flip Scanner v2.1.1
 
-Scanner economy-only cho Path of Exile 2 patch 0.5.5 / Forbidden Rites.
+Frontend static giống project PoE1: **GitHub repo chỉ chứa `docs/`**. Cloudflare Worker được quản lý/deploy riêng trong Cloudflare Dashboard.
 
-## Luồng sử dụng
+## Cấu trúc GitHub
 
-1. Deploy `worker/` lên Cloudflare Workers.
-2. Deploy `docs/` lên GitHub Pages hoặc host tĩnh.
-3. Nhập Worker URL.
-4. Bấm **SCAN POE2**.
-5. Scanner tự lấy economy data từ poe.ninja cho các category PoE2.
-6. Bảng **Ứng viên flip** xếp hạng theo liquidity, market value và độ ổn định trend.
-7. Bấm **Analyze** ở item muốn flip.
-8. Nhập **Buy Chaos/item + Qty** và **Sell Divine/item + Qty**.
-9. Scanner tự tính Capital, Gross Profit, Fee, Net Profit, ROI/Margin và Net/round.
-10. Bấm **LƯU BUY/SELL** để giữ dữ liệu trên trình duyệt.
+```text
+docs/
+├── index.html
+├── config.js
+└── .nojekyll
+```
 
-## Economy categories
+## 1. Cloudflare Worker
 
-- Currency
-- Fragments
-- Abyss
-- Uncut Gems
-- Lineage Gems
-- Essences
-- Soul Cores
-- Idols
-- Runes
-- Ritual / Omens
-- Expedition
-- Delirium / Liquid Emotions
-- Breach / Catalysts
-- Verisium
+Tạo một Worker riêng trên Cloudflare, ví dụ:
 
-Không scan Unique, Equipment hoặc Build data.
+```text
+poe2-forbidden-rites-economy-scanner
+```
 
-## API / Worker
+Paste code Worker được cung cấp riêng vào Cloudflare Dashboard → Edit code → Deploy.
 
-Worker chỉ proxy các economy endpoints được poe.ninja công khai cho PoE2. API này được cập nhật không liên tục; poe.ninja khuyến nghị client proxy qua backend, cache response và không poll quá nhanh.
+Sau khi deploy, kiểm tra:
 
-## Profit formula
+```text
+https://YOUR-WORKER.workers.dev/health
+```
 
-`Capital D = Buy Chaos total / Market Divine rate`
+## 2. Cấu hình GitHub frontend
 
-`Gross D = Sell Divine/item × Sell Qty`
+Mở `docs/config.js` và điền URL Worker:
 
-`Net D = Gross D − Capital D − Extra Fee D`
+```js
+window.POE2_FLIP_CONFIG = {
+  workerUrl: "https://YOUR-WORKER.workers.dev",
+  defaultLeague: "Forbidden Rites"
+};
+```
 
-`ROI = Net D / Capital D × 100`
+## 3. GitHub Pages
 
-PoE2 economy overview không cung cấp bid/ask order cá nhân, vì vậy scanner chỉ xác định **ứng viên** từ market data; lợi nhuận thực tế được tính sau khi người dùng nhập order Buy/Sell.
+GitHub → repository → Settings → Pages:
+
+- Source: **Deploy from a branch**
+- Branch: **main**
+- Folder: **/docs**
+
+Save và chờ GitHub Pages deploy.
+
+## 4. Sử dụng
+
+Mở website GitHub Pages → **CHECK WORKER** → **REFRESH LEAGUE** → **SCAN POE2**.
+
+Scanner chỉ dùng các nhóm Economy của PoE2; không có Unique/Equipment/Build.

@@ -13,8 +13,8 @@
 </head>
 <body>
 <div class="wrap">
-<h1>PoE 2 Forbidden Rites Economy Flip Scanner <span class="small">v2.0.0 · Patch 0.5.5</span></h1>
-<div class="sub">Luồng giống scanner PoE1: <b>SCAN → lấy economy từ poe.ninja → lọc ứng viên flip → ANALYZE → nhập Buy/Sell Order → tự tính Profit.</b> Chỉ scan economy, không scan Unique/Equipment.</div>
+<h1>PoE 2 Forbidden Rites Economy Flip Scanner <span class="small">v2.1.0 · Patch 0.5.5</span></h1>
+<div class="sub">Luồng giống scanner PoE1: <b>SCAN → Cloudflare Worker → poe.ninja → lọc ứng viên flip → ANALYZE → nhập Buy/Sell Order → tự tính Profit.</b> Chỉ scan economy, không scan Unique/Equipment.</div>
 
 <div class="card">
 <div class="grid">
@@ -26,7 +26,7 @@
   <div><label>Max |7d| %</label><input id="maxChange" type="number" value="100" step="5"></div>
 </div>
 <div class="actions"><button id="scanBtn" onclick="scan()">SCAN POE2</button><button class="sec" onclick="health()">CHECK WORKER</button><button class="sec" onclick="loadLeagues()">REFRESH LEAGUE</button><button class="sec" onclick="exportCsv()">EXPORT CSV</button></div>
-<div id="status" class="status">Chưa scan. Nhập Worker URL rồi bấm <b>SCAN POE2</b>.</div>
+<div id="status" class="status">Sẵn sàng. Worker URL được đọc tự động từ <b>docs/config.js</b>. Sau khi deploy Worker, chỉ cần mở web và bấm <b>SCAN POE2</b>.</div>
 </div>
 
 <div class="card"><div class="kpis">
@@ -88,7 +88,9 @@
 <div class="modalActions"><button onclick="saveAnalyze()">LƯU BUY/SELL</button><button class="sec" onclick="clearAnalyze()">XÓA GIÁ</button></div>
 </div>
 
+<script src="config.js"></script>
 <script>
+const APP_CONFIG=window.POE2_FLIP_CONFIG||{};
 const CATS={Currency:"Currency",Fragments:"Fragments",Abyss:"Abyssal Bones",UncutGems:"Uncut Gems",LineageSupportGems:"Lineage Gems",Essences:"Essences",SoulCores:"Soul Cores",Idols:"Idols",Runes:"Runes",Ritual:"Omens",Expedition:"Expedition",Delirium:"Liquid Emotions",Breach:"Catalysts",Verisium:"Verisium"};
 const state={items:[],league:"forbiddenrites",divineChaos:0,current:null};
 const fav=new Set(JSON.parse(localStorage.getItem("poe2frFavV2")||"[]"));
@@ -97,7 +99,7 @@ const $=id=>document.getElementById(id), num=v=>{const n=Number(v);return Number
 const fmt=(v,d=2)=>num(v).toLocaleString("en-US",{maximumFractionDigits:d});
 const esc=s=>String(s??"").replace(/[&<>\"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]));
 function worker(){return $("workerUrl").value.trim().replace(/\/$/,"")}
-function saveWorker(){localStorage.setItem("poe2frWorkerV2",worker())}
+function saveWorker(){const u=worker();if(u)localStorage.setItem("poe2frWorkerV2",u)}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function setStatus(html){$("status").innerHTML=html}
 function coreItems(core){const x=core?.items||{};return Array.isArray(x)?Object.fromEntries(x.map(v=>[v.id,v])):x}
@@ -191,7 +193,11 @@ function saveAnalyze(){if(!state.current)return;const k=key(state.current);enter
 function clearAnalyze(){if(!state.current)return;delete entered[key(state.current)];localStorage.setItem("poe2frEnteredV2",JSON.stringify(entered));$("buyC").value="";$("sellD").value="";updateCalc();render()}
 function exportCsv(){const a=getFiltered();if(!a.length){setStatus("Không có dữ liệu để export.");return}const head=["Item","Category","Liquidity_c_h","Market_Chaos","Trend_7d","Score","Buy_Chaos_Item","Buy_Qty","Buy_Total_Chaos","Sell_Divine_Item","Sell_Qty","Sell_Total_Divine","Fee_Divine","Net_Divine","ROI_Percent","Decision"];const rows=a.map(x=>{const c=entered[key(x)]?calc(x,entered[key(x)]):null;return[x.name,categoryLabel(x.cat),x.volume,x.market,x.change,x.score,c?.buy??"",c?.qty??"",c?.buyTotal??"",c?.sellD??"",c?.sellQty??"",c?.sellTotal??"",c?.fee??"",c?.net??"",c?.roi??"",decision(x)[0]]});const csv=[head,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),aEl=document.createElement("a");aEl.href=url;aEl.download=`poe2-forbidden-rites-flips-${Date.now()}.csv`;aEl.click();URL.revokeObjectURL(url)}
 ["buyC","qty","sellD","sellQty","feeD"].forEach(id=>$(id).addEventListener("input",updateCalc));["onlyFav","onlyEntered","onlyPositive","hideLow","search","minValue","maxValue","minVol","maxChange"].forEach(id=>$(id).addEventListener("input",()=>state.items.length&&render()));
-loadCategories();$("workerUrl").value=localStorage.getItem("poe2frWorkerV2")||"";if($("workerUrl").value)loadLeagues();
+loadCategories();
+const savedWorker=localStorage.getItem("poe2frWorkerV2")||"";
+$("workerUrl").value=savedWorker||APP_CONFIG.workerUrl||"";
+if(APP_CONFIG.defaultLeague){const hit=[...$("league").options].find(o=>o.text.toLowerCase()===String(APP_CONFIG.defaultLeague).toLowerCase());if(hit)$("league").value=hit.value}
+if($("workerUrl").value)loadLeagues();
 </script>
 </body>
 </html>
