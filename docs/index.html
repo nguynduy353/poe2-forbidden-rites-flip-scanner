@@ -13,17 +13,17 @@
 </head>
 <body>
 <div class="wrap">
-<h1>PoE 2 Forbidden Rites Economy Flip Scanner <span class="small">v2.1.4 · Patch 0.5.5</span></h1>
+<h1>PoE 2 Forbidden Rites Economy Flip Scanner <span class="small">v2.1.5 · Patch 0.5.5</span></h1>
 <div class="sub">Luồng giống scanner PoE1: <b>SCAN → Cloudflare Worker → poe.ninja → lọc ứng viên flip → ANALYZE → nhập Buy/Sell Order → tự tính Profit.</b> Chỉ scan economy, không scan Unique/Equipment.</div>
 
 <div class="card">
 <div class="grid">
   <div style="grid-column:span 2"><label>Cloudflare Worker URL</label><input id="workerUrl" placeholder="https://your-worker.workers.dev"></div>
   <div><label>League</label><select id="league"><option value="forbiddenrites">Forbidden Rites</option></select></div>
-  <div><label>Min Market c</label><input id="minValue" type="number" value="0.05" step="0.01"></div>
-  <div><label>Max Market c</label><input id="maxValue" type="number" value="10000"></div>
-  <div><label>Min Volume c</label><input id="minVol" type="number" value="0" step="100"></div>
-  <div><label>Max |7d| %</label><input id="maxChange" type="number" value="100" step="5"></div>
+  <div><label>Min Market Ex</label><input id="minValue" type="number" value="0" step="0.001"></div>
+  <div><label>Max Market Ex</label><input id="maxValue" type="number" value="10000" step="0.001"></div>
+  <div><label>Min Volume Ex</label><input id="minVol" type="number" value="0" step="0.01"></div>
+  <div><label>Max |7d| %</label><input id="maxChange" type="number" value="1000" step="5"></div>
 </div>
 <div class="actions"><button id="scanBtn" onclick="scan()">SCAN POE2</button><button class="sec" onclick="health()">CHECK WORKER</button><button class="sec" onclick="loadLeagues()">REFRESH LEAGUE</button><button class="sec" onclick="exportCsv()">EXPORT CSV</button></div>
 <div id="status" class="status">Sẵn sàng. Worker URL được đọc tự động từ <b>docs/config.js</b>. Sau khi deploy Worker, chỉ cần mở web và bấm <b>SCAN POE2</b>.</div>
@@ -41,7 +41,7 @@
 <div class="kpi"><span class="small">Fetched</span><b id="kFetched">0</b></div>
 <div class="kpi"><span class="small">Candidates</span><b id="kItems">0</b></div>
 <div class="kpi"><span class="small">Categories</span><b id="kCats">0</b></div>
-<div class="kpi"><span class="small">Total Volume</span><b id="kVol">0 c</b></div>
+<div class="kpi"><span class="small">Total Volume</span><b id="kVol">0 Ex</b></div>
 <div class="kpi"><span class="small">Divine → Exalted</span><b id="kDiv">—</b></div>
 <div class="kpi"><span class="small">Top Candidate</span><b id="kBest">—</b></div>
 </div></div>
@@ -61,7 +61,7 @@
 <div class="card">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>Ứng viên flip</b><span id="count" class="small">0 items</span></div>
 <div class="tablewrap"><table><thead><tr>
-<th>★ / Item</th><th>Economy</th><th>Volume</th><th>Market c</th><th>7d</th><th>Score</th><th>Buy Ex/item</th><th>Sell D/item</th><th>Qty</th><th>Capital Ex</th><th>Net Ex</th><th>Margin</th><th>Decision</th><th></th>
+<th>★ / Item</th><th>Economy</th><th>Volume Ex</th><th>Market Ex</th><th>7d</th><th>Score</th><th>Buy Ex/item</th><th>Sell D/item</th><th>Qty</th><th>Capital Ex</th><th>Net Ex</th><th>Margin</th><th>Decision</th><th></th>
 </tr></thead><tbody id="rows"></tbody></table></div>
 <div class="hint">Scanner hiển thị toàn bộ item qua bộ lọc và ưu tiên item có score cao ở đầu. Sau khi Analyze và nhập Buy/Sell, row sẽ tự cập nhật Net Ex, Margin và Decision.</div>
 </div>
@@ -115,23 +115,25 @@ function findCoreId(core,name){const m=coreItems(core);return Object.entries(m).
 function coreRate(core,name){const id=findCoreId(core,name);return id?num(core?.rates?.[id]):0}
 function sparkChange(s){const a=(s?.data||s?.values||s||[]).map(num).filter(Number.isFinite);return a.length>1&&a[0]>0?(a[a.length-1]/a[0]-1)*100:0}
 function normalize(lines,core,cat){
-  // API values are normalized through the category core. Prefer an explicit Chaos rate when present.
+  // Convert poe.ninja's primary-currency values directly to Exalted.
+  // Exalted Orb is the scanner's market/volume display unit; Chaos is no longer shown.
+  const exaltedRate=coreRate(core,"Exalted Orb")||0;
   const chaosRate=coreRate(core,"Chaos Orb")||0;
   const primary=core?.primary||"";
-  const primaryToChaos=chaosRate>0?1/chaosRate:(/chaos/i.test(primary)?1:0);
+  const primaryToExalted=exaltedRate>0?1/exaltedRate:(/exalted/i.test(primary)?1:(chaosRate>0?1/chaosRate/150:0));
   return (lines||[]).map(x=>{
     const primaryValue=num(x.primaryValue);
     const volumePrimary=num(x.volumePrimaryValue);
-    const chaosValue=primaryToChaos>0?primaryValue*primaryToChaos:0;
-    const volumeChaos=primaryToChaos>0?volumePrimary*primaryToChaos:0;
+    const marketEx=primaryToExalted>0?primaryValue*primaryToExalted:0;
+    const volumeEx=primaryToExalted>0?volumePrimary*primaryToExalted:0;
     const meta=coreItems(core)[x.id]||{};
-    return {id:String(x.id),name:x.name||meta.name||String(x.id),icon:x.icon||meta.icon||"",cat,market:chaosValue,volume:volumeChaos,change:sparkChange(x.sparkline||x.sparkLine),maxVolumeRate:num(x.maxVolumeRate),pair:x.maxVolumeCurrency||""};
+    return {id:String(x.id),name:x.name||meta.name||String(x.id),icon:x.icon||meta.icon||"",cat,market:marketEx,volume:volumeEx,change:sparkChange(x.sparkline||x.sparkLine),maxVolumeRate:num(x.maxVolumeRate),pair:x.maxVolumeCurrency||""};
   }).filter(x=>x.market>0);
 }
 function scoreItem(x){
   const v=Math.max(x.market,0.0001), liq=Math.max(x.volume,0), ch=Math.abs(x.change);
   const liquidity=Math.min(50,Math.log10(liq+1)*8);
-  const tradability=v<0.1?8:v<1?14:v<100?18:14;
+  const tradability=v<0.01?8:v<0.1?14:v<10?18:14;
   const stability=Math.max(0,18-Math.min(18,ch/5));
   return liquidity+tradability+stability;
 }
@@ -199,16 +201,16 @@ function calc(x,e){
 }
 function decision(x){const e=entered[key(x)];if(!e)return["TIỀM NĂNG","potential"];const c=calc(x,e);if(c.netEx<=0)return["BỎ QUA","skip"];if(c.roi>=10||c.netEx>=1)return["ƯU TIÊN","priority"];return["CÂN NHẮC","consider"]}
 function render(){
- const a=getFiltered();$("count").textContent=`${a.length} items`;$("kFetched").textContent=state.items.length;$("kItems").textContent=a.length;$("kCats").textContent=new Set(a.map(x=>x.cat)).size;$("kVol").textContent=fmt(a.reduce((s,x)=>s+x.volume,0),0)+" c";$("kDiv").textContent=state.divineExalted?fmt(state.divineExalted,2)+" Ex/D":"—";$("kBest").textContent=a[0]?.name||"—";
+ const a=getFiltered();$("count").textContent=`${a.length} items`;$("kFetched").textContent=state.items.length;$("kItems").textContent=a.length;$("kCats").textContent=new Set(a.map(x=>x.cat)).size;$("kVol").textContent=fmt(a.reduce((s,x)=>s+x.volume,0),2)+" Ex";$("kDiv").textContent=state.divineExalted?fmt(state.divineExalted,2)+" Ex/D":"—";$("kBest").textContent=a[0]?.name||"—";
  const rows=$("rows");rows.innerHTML="";
  a.forEach(x=>{const k=key(x),e=entered[k],c=e?calc(x,e):null,[d,dc]=decision(x);const tr=document.createElement("tr");if(e)tr.className="rowHighlight";tr.innerHTML=`
 <td><div class="name"><button class="starBtn ${fav.has(k)?"on":""}" title="Watchlist">★</button>${x.icon?`<img src="${esc(x.icon)}" onerror="this.style.display='none'">`:""}<span>${esc(x.name)}</span></div></td>
 <td><span class="badge potential">${esc(categoryLabel(x.cat))}</span></td>
-<td>${fmt(x.volume,0)}</td><td class="marketVal">${fmt(x.market,3)}c</td><td class="trend ${x.change>0?"up":x.change<0?"down":""}">${x.change>0?"+":""}${fmt(x.change,1)}%</td><td class="score">${fmt(x.score,1)}</td>
+<td>${fmt(x.volume,2)}</td><td class="marketVal">${fmt(x.market,4)} Ex</td><td class="trend ${x.change>0?"up":x.change<0?"down":""}">${x.change>0?"+":""}${fmt(x.change,1)}%</td><td class="score">${fmt(x.score,1)}</td>
 <td>${c?fmt(c.buy,3)+" Ex":"—"}</td><td>${c?fmt(c.sellD,5)+"D":"—"}</td><td>${c?fmt(c.qty,0):"—"}</td><td>${c?fmt(c.buyTotal,2)+" Ex":"—"}</td><td class="${c?(c.netEx>0?"profit":"loss"):"mutedCell"}">${c?fmt(c.netEx,4)+" Ex":"—"}</td><td class="${c?(c.roi>0?"profit":"loss"):"mutedCell"}">${c?fmt(c.roi,2)+"%":"—"}</td><td><span class="badge ${dc}">${d}</span></td><td><button class="analyze">Analyze</button></td>`;
  tr.querySelector(".starBtn").onclick=()=>{fav.has(k)?fav.delete(k):fav.add(k);localStorage.setItem("poe2frFavV2",JSON.stringify([...fav]));render()};tr.querySelector(".analyze").onclick=()=>openAnalyze(x);rows.appendChild(tr)})
 }
-function openAnalyze(x){state.current=x;const e=entered[key(x)]||{};$("modalItem").textContent=`${x.name} · ${categoryLabel(x.cat)} · Market ${fmt(x.market,3)}c · Volume ${fmt(x.volume,0)}c`;$("buyC").value=e.buyC??"";$("qty").value=e.qty??1;$("sellD").value=e.sellD??"";$("sellQty").value=e.sellQty??(e.qty||1);$("feeD").value=e.feeD??0;$("modalDivRate").value=state.divineExalted?`1 Divine = ${fmt(state.divineExalted,2)} Exalted`:"—";$("modalBack").classList.add("show");$("modal").classList.add("show");updateCalc()}
+function openAnalyze(x){state.current=x;const e=entered[key(x)]||{};$("modalItem").textContent=`${x.name} · ${categoryLabel(x.cat)} · Market ${fmt(x.market,4)} Ex · Volume ${fmt(x.volume,2)} Ex`;$("buyC").value=e.buyC??"";$("qty").value=e.qty??1;$("sellD").value=e.sellD??"";$("sellQty").value=e.sellQty??(e.qty||1);$("feeD").value=e.feeD??0;$("modalDivRate").value=state.divineExalted?`1 Divine = ${fmt(state.divineExalted,2)} Exalted`:"—";$("modalBack").classList.add("show");$("modal").classList.add("show");updateCalc()}
 function closeAnalyze(ev){if(ev&&ev.target!==$("modalBack"))return;$("modalBack").classList.remove("show");$("modal").classList.remove("show");state.current=null}
 function updateCalc(){
  const x=state.current;if(!x)return;const temp={buyC:$("buyC").value,qty:$("qty").value,sellD:$("sellD").value,sellQty:$("sellQty").value,feeD:$("feeD").value};const c=calc(x,temp);$("buyTotal").value=c.buyTotal?fmt(c.buyTotal,2)+" Ex":"";$("sellTotal").value=c.sellTotalD?fmt(c.sellTotalD,5)+" D":"";$("spread").value=(c.buy&&c.sellD&&state.divineExalted)?fmt(c.spread,2)+"%":"—";$("rCapital").textContent=c.capitalEx?fmt(c.capitalEx,4)+" Ex":"—";$("rGross").textContent=c.gross?fmt(c.gross,4)+" Ex":"—";$("rFee").textContent=fmt(c.feeEx,4)+" Ex";$("rNet").textContent=(c.buy||c.sellD)?fmt(c.netEx,4)+" Ex":"—";$("rRoi").textContent=(c.buy||c.sellD)?fmt(c.roi,2)+"%":"—";$("rRound").textContent=c.rounds?fmt(c.netRound,4)+" Ex":"—";$("rBuyEff").textContent=c.buy?fmt(c.buy,3)+" Ex":"—";$("rSellEff").textContent=c.sellD&&state.divineExalted?fmt(c.sellD*state.divineExalted,2)+" Ex":"—";$("netBox").className="result "+(c.netEx>0?"net":c.netEx<0?"loss":"");$("calcHint").innerHTML=state.divineExalted?`Công thức: <b>Net Ex = (Sell Divine × ${fmt(state.divineExalted,2)}) − Buy Ex − (Fee Divine × ${fmt(state.divineExalted,2)})</b>. ${c.netEx>0?`<span class="ok">Flip đang có lợi nhuận theo order bạn nhập.</span>`:`<span class="danger">Order hiện tại chưa có lợi nhuận.</span>`}`:"Chưa có Divine → Exalted rate."
@@ -216,7 +218,7 @@ function updateCalc(){
 function saveAnalyze(){if(!state.current)return;const k=key(state.current);entered[k]={buyC:num($("buyC").value),qty:Math.floor(num($("qty").value)),sellD:num($("sellD").value),sellQty:Math.floor(num($("sellQty").value)),feeD:num($("feeD").value),savedAt:Date.now()};localStorage.setItem("poe2frEnteredV3",JSON.stringify(entered));closeAnalyze();render();setStatus(`<span class="ok">✓ Đã lưu Buy/Sell cho ${esc(state.current.name)}.</span>`)}
 function clearAnalyze(){if(!state.current)return;delete entered[key(state.current)];localStorage.setItem("poe2frEnteredV3",JSON.stringify(entered));$("buyC").value="";$("sellD").value="";updateCalc();render()}
 
-function exportCsv(){const a=getFiltered();if(!a.length){setStatus("Không có dữ liệu để export.");return}const head=["Item","Category","Volume_Chaos","Market_Chaos","Trend_7d","Score","Buy_Exalted_Item","Buy_Qty","Buy_Total_Exalted","Sell_Divine_Item","Sell_Qty","Sell_Total_Divine","Fee_Divine","Net_Exalted","Net_Divine","ROI_Percent","Decision"];const rows=a.map(x=>{const c=entered[key(x)]?calc(x,entered[key(x)]):null;return[x.name,categoryLabel(x.cat),x.volume,x.market,x.change,x.score,c?.buy??"",c?.qty??"",c?.buyTotal??"",c?.sellD??"",c?.sellQty??"",c?.sellTotalD??"",c?.feeD??"",c?.netEx??"",c?.netD??"",c?.roi??"",decision(x)[0]]});const csv=[head,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),aEl=document.createElement("a");aEl.href=url;aEl.download=`poe2-forbidden-rites-flips-${Date.now()}.csv`;aEl.click();URL.revokeObjectURL(url)}
+function exportCsv(){const a=getFiltered();if(!a.length){setStatus("Không có dữ liệu để export.");return}const head=["Item","Category","Volume_Exalted","Market_Exalted","Trend_7d","Score","Buy_Exalted_Item","Buy_Qty","Buy_Total_Exalted","Sell_Divine_Item","Sell_Qty","Sell_Total_Divine","Fee_Divine","Net_Exalted","Net_Divine","ROI_Percent","Decision"];const rows=a.map(x=>{const c=entered[key(x)]?calc(x,entered[key(x)]):null;return[x.name,categoryLabel(x.cat),x.volume,x.market,x.change,x.score,c?.buy??"",c?.qty??"",c?.buyTotal??"",c?.sellD??"",c?.sellQty??"",c?.sellTotalD??"",c?.feeD??"",c?.netEx??"",c?.netD??"",c?.roi??"",decision(x)[0]]});const csv=[head,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),aEl=document.createElement("a");aEl.href=url;aEl.download=`poe2-forbidden-rites-flips-${Date.now()}.csv`;aEl.click();URL.revokeObjectURL(url)}
 ["buyC","qty","sellD","sellQty","feeD"].forEach(id=>$(id).addEventListener("input",updateCalc));$("divineExalted").value=state.divineExalted;$("divineExalted").addEventListener("input",()=>{state.divineExalted=num($("divineExalted").value);localStorage.setItem("poe2frDivineExaltedV3",String(state.divineExalted));$("modalDivRate").value=state.divineExalted?`1 Divine = ${fmt(state.divineExalted,2)} Exalted`:"—";if(state.items.length)render();if(state.current)updateCalc()});["onlyFav","onlyEntered","onlyPositive","search","minValue","maxValue","minVol","maxChange"].forEach(id=>$(id).addEventListener("input",()=>state.items.length&&render()));
 loadCategories();
 const savedWorker=localStorage.getItem("poe2frWorkerV2")||"";
