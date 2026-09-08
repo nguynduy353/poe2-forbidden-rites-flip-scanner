@@ -13,7 +13,7 @@
 </head>
 <body>
 <div class="wrap">
-<h1>PoE 2 Forbidden Rites Economy Flip Scanner <span class="small">v2.1.2 · Patch 0.5.5</span></h1>
+<h1>PoE 2 Forbidden Rites Economy Flip Scanner <span class="small">v2.1.4 · Patch 0.5.5</span></h1>
 <div class="sub">Luồng giống scanner PoE1: <b>SCAN → Cloudflare Worker → poe.ninja → lọc ứng viên flip → ANALYZE → nhập Buy/Sell Order → tự tính Profit.</b> Chỉ scan economy, không scan Unique/Equipment.</div>
 
 <div class="card">
@@ -55,7 +55,7 @@
 <label><input id="onlyPositive" type="checkbox"> Chỉ Profit dương</label>
 </div>
 <div class="search"><label>Tìm item</label><input id="search" type="search" placeholder="Ví dụ: Divine Orb, Soul Core, Omen..."></div>
-<div class="hint">Market value/volume/trend là tín hiệu để tìm <b>ứng viên</b>. poe.ninja không cung cấp bid/ask order cá nhân trong economy overview, nên Profit chỉ được xác nhận sau khi bạn nhập giá Buy/Sell thực tế trong <b>Analyze</b>. citeturn0search0</div>
+<div class="hint">Scanner hiển thị <b>tất cả item</b> nằm trong bộ lọc. Item có score/tiềm năng cao được <b>ưu tiên xếp ở đầu</b>. poe.ninja không cung cấp bid/ask order cá nhân trong economy overview, nên Profit chỉ được xác nhận sau khi bạn nhập giá Buy/Sell thực tế trong <b>Analyze</b>. citeturn0search0</div>
 </div>
 
 <div class="card">
@@ -63,7 +63,7 @@
 <div class="tablewrap"><table><thead><tr>
 <th>★ / Item</th><th>Economy</th><th>Volume</th><th>Market c</th><th>7d</th><th>Score</th><th>Buy Ex/item</th><th>Sell D/item</th><th>Qty</th><th>Capital Ex</th><th>Net Ex</th><th>Margin</th><th>Decision</th><th></th>
 </tr></thead><tbody id="rows"></tbody></table></div>
-<div class="hint">Trước khi Analyze, Buy/Sell/Profit để trống. Sau khi nhập order, row sẽ tự cập nhật Net Ex, Margin và Decision. Scanner vẫn lấy market data từ poe.ninja; Profit chỉ được xác nhận từ order bạn nhập.</div>
+<div class="hint">Scanner hiển thị toàn bộ item qua bộ lọc và ưu tiên item có score cao ở đầu. Sau khi Analyze và nhập Buy/Sell, row sẽ tự cập nhật Net Ex, Margin và Decision.</div>
 </div>
 <div class="footer">Data source: poe.ninja PoE2 Economy API · Worker proxy/cache · Không sử dụng Unique/Equipment.</div>
 </div>
@@ -156,6 +156,9 @@ async function loadLeagues(){
 async function scan(){
   saveWorker();
   const selected=[...document.querySelectorAll("[data-cat]:checked")].map(x=>x.dataset.cat);if(!selected.length){setStatus(`<span class="bad">Hãy chọn ít nhất 1 category.</span>`);return}
+  // A new scan is a fresh dataset view. Clear any previous name search so the fetched
+  // rows are immediately visible; users can search again after the scan completes.
+  $("search").value="";
   const league=$("league").value||"forbiddenrites";state.league=league;state.items=[];state.divineChaos=0;$("scanBtn").disabled=true;setStatus("Đang lấy market data từ poe.ninja…");
   let all=[],fail=[],last=null;
   try{
@@ -169,12 +172,24 @@ async function scan(){
     render();
     const visible=getFiltered();
     const rate=state.divineExalted?`1D = ${fmt(state.divineExalted,2)} Ex`:`—`;
-    setStatus(`<span class="ok">✓ Scan xong.</span> · Fetched: <b>${state.items.length}</b> · Showing: <b>${visible.length}</b> · League: <b>${esc(league)}</b> · ${rate}${fail.length?`<br><span class="orange">${fail.length} category lỗi:</span> ${esc(fail.join(" | "))}`:""}`)
+    setStatus(`<span class="ok">✓ Scan xong.</span> · Fetched: <b>${state.items.length}</b> · Showing: <b>${visible.length}</b> · <b>Tất cả item phù hợp bộ lọc được giữ lại</b>; score cao được ưu tiên đầu · League: <b>${esc(league)}</b> · ${rate}${fail.length?`<br><span class="orange">${fail.length} category lỗi:</span> ${esc(fail.join(" | "))}`:""}`)
   }catch(e){setStatus(`<span class="bad">Scan lỗi:</span> ${esc(e.message)}`)}finally{$("scanBtn").disabled=false}
 }
 function getFiltered(){
   const q=$("search").value.trim().toLowerCase(),onlyFav=$("onlyFav").checked,onlyEntered=$("onlyEntered").checked,onlyPositive=$("onlyPositive").checked,minL=num($("minVol").value);
-  return state.items.filter(x=>{const k=key(x);const e=entered[k];if(!candidateFilter(x))return false;if(x.volume<minL)return false;if(q&&!x.name.toLowerCase().includes(q))return false;if(onlyFav&&!fav.has(k))return false;if(onlyEntered&&!e)return false;if(onlyPositive&&(!e||calc(x,e).netEx<=0))return false;return true})
+  // Show every item that matches the user's filters. Potential opportunities are
+  // already ranked first by score; the filters only decide visibility, not whether
+  // an item is allowed into the scanned dataset.
+  return state.items.filter(x=>{
+    const k=key(x),e=entered[k];
+    if(!candidateFilter(x))return false;
+    if(x.volume<minL)return false;
+    if(q&&!x.name.toLowerCase().includes(q))return false;
+    if(onlyFav&&!fav.has(k))return false;
+    if(onlyEntered&&!e)return false;
+    if(onlyPositive&&(!e||calc(x,e).netEx<=0))return false;
+    return true;
+  });
 }
 function key(x){return `${x.cat}|${x.name}`}
 function calc(x,e){
